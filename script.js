@@ -1,12 +1,12 @@
 // Your web app's Firebase configuration
 var firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  databaseURL: "YOUR_DATABASE_URL",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyDPE1cP939Bw8DZSt9cInwifEqYAk3wVIM",
+  authDomain: "daily-40-math.firebaseapp.com",
+  databaseURL: "https://daily-40-math-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "daily-40-math",
+  storageBucket: "daily-40-math.appspot.com",
+  messagingSenderId: "371949121047",
+  appId: "1:371949121047:web:80140e1acbd17581a43652"
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
