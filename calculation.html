@@ -94,7 +94,8 @@
             <button id="check-btn">Check</button>
         </div>
         <div class="result-info" id="test-results" style="display: none;">
-            <table>
+            <table class="center">
+                <tr><td>测试人员</td><td><span id="tester-name"></span></td></tr>
                 <tr><td>开始时间</td><td><span id="start-time"></span></td></tr>
                 <tr><td>测试时间</td><td><span id="test-time"></span></td></tr>
                 <tr><td>答对题目数量</td><td><span id="correct-answers"></span></td></tr>
@@ -142,7 +143,9 @@
             "Pics/pig-icon.png"
         ];
 
-        document.getElementById('animal').src = animals[Math.floor(Math.random() * animals.length)];
+        let currentAnimalIndex = 0;
+        const animalElement = document.getElementById('animal');
+        animalElement.src = animals[currentAnimalIndex];
 
         function startQuiz() {
             isStarted = true;
@@ -201,6 +204,12 @@
                     multiplication: { num1: [1, 99], num2: [2, 11] },
                     division: { num1: [1, 99], num2: [2, 11] }
                 },
+                W: {
+                    addition: { num1: [2, 19], num2: [2, 19], sum: 38 },
+                    subtraction: { num1: [2, 19], num2: [2, 19] },
+                    multiplication: { num1: [2, 19], num2: [2, 19] },
+                    division: { num1: [2, 19], num2: [2, 19] }
+                },
                 Z: {
                     addition: { num1: [1, 9999], num2: [1, 9999], sum: 9999 },
                     subtraction: { num1: [1, 9999], num2: [1, 9999] },
@@ -223,10 +232,17 @@
                     question = `${num1} * ${num2} =`;
                     answer = num1 * num2;
                 } else { // division
-                    num2 = getRandomInt(range.division.num2[0], range.division.num2[1]);
-                    num1 = getRandomInt(range.division.num1[0], range.division.num1[1]) * num2;
-                    question = `${num1} / ${num2} =`;
-                    answer = num1 / num2;
+                    if (tester === 'W') { // Replace division with addition for tester 'W'
+                        num1 = getRandomInt(range.addition.num1[0], range.addition.num1[1]);
+                        num2 = getRandomInt(range.addition.num2[0], Math.min(range.addition.sum - num1, range.addition.num2[1]));
+                        question = `${num1} + ${num2} =`;
+                        answer = num1 + num2;
+                    } else {
+                        num2 = getRandomInt(range.division.num2[0], range.division.num2[1]);
+                        num1 = getRandomInt(range.division.num1[0], range.division.num1[1]) * num2;
+                        question = `${num1} / ${num2} =`;
+                        answer = num1 / num2;
+                    }
                 }
             } else {
                 if (index <= 10) { // multiplication
@@ -235,10 +251,17 @@
                     question = `${num1} * ${num2} =`;
                     answer = num1 * num2;
                 } else if (index <= 20) { // division
-                    num2 = getRandomInt(range.division.num2[0], range.division.num2[1]);
-                    num1 = getRandomInt(range.division.num1[0], range.division.num1[1]) * num2;
-                    question = `${num1} / ${num2} =`;
-                    answer = num1 / num2;
+                    if (tester === 'W') { // Replace division with addition for tester 'W'
+                        num1 = getRandomInt(range.addition.num1[0], range.addition.num1[1]);
+                        num2 = getRandomInt(range.addition.num2[0], Math.min(range.addition.sum - num1, range.addition.num2[1]));
+                        question = `${num1} + ${num2} =`;
+                        answer = num1 + num2;
+                    } else {
+                        num2 = getRandomInt(range.division.num2[0], range.division.num2[1]);
+                        num1 = getRandomInt(range.division.num1[0], range.division.num1[1]) * num2;
+                        question = `${num1} / ${num2} =`;
+                        answer = num1 / num2;
+                    }
                 } else if (index <= 30) { // subtraction
                     num1 = getRandomInt(range.subtraction.num1[0], range.subtraction.num1[1]);
                     num2 = getRandomInt(range.subtraction.num2[0], Math.min(num1, range.subtraction.num2[1]));
@@ -261,6 +284,7 @@
         function showResults() {
             const endTime = new Date();
             const testTime = new Date(endTime - startTime);
+            document.getElementById('tester-name').textContent = tester;
             document.getElementById('start-time').textContent = startTime.toLocaleTimeString();
             document.getElementById('test-time').textContent = `${pad(testTime.getUTCMinutes())}:${pad(testTime.getUTCSeconds())}`;
             document.getElementById('correct-answers').textContent = correctAnswers;
@@ -268,6 +292,7 @@
             document.getElementById('total-score').textContent = ((correctAnswers / totalQuestions) * 100).toFixed(2);
             document.getElementById('test-results').style.display = 'block';
             document.getElementById('ranking-btn').style.display = 'block';
+            window.scrollTo(0, document.body.scrollHeight);
         }
 
         function saveResults() {
@@ -317,10 +342,15 @@
                     isCorrect.classList.add('incorrect');
                 }
                 correctAnswer.textContent = correctAnswer.dataset.answer; // Show the correct answer
+
+                // Change animal
+                currentAnimalIndex = (currentAnimalIndex + 1) % animals.length;
+                animalElement.src = animals[currentAnimalIndex];
+                animalElement.style.top = row.getBoundingClientRect().top + 'px';
             });
             showResults();
             saveResults();
-            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('check-btn').style.backgroundColor = 'gray';
             document.getElementById('ranking-btn').style.display = 'block';
         });
 
