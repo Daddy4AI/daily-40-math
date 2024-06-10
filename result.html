@@ -103,6 +103,7 @@
                                   W: { correct: 0, totalTests: 0, latestCorrect: 0, latestTime: '' },
                                   Z: { correct: 0, totalTests: 0, latestCorrect: 0, latestTime: '' },
                                   D: { correct: 0, totalTests: 0, latestCorrect: 0, latestTime: '' } };
+                const resultArray = [];
                 let index = 0;
 
                 for (let key in results) {
@@ -112,9 +113,22 @@
                     summary[result.tester].latestCorrect = result.correct;
                     summary[result.tester].latestTime = result.startTime;
 
+                    resultArray.push(result);
+                }
+
+                // Sort resultArray first by correct answers, then by total tests
+                resultArray.sort((a, b) => {
+                    if (b.correct === a.correct) {
+                        return b.totalTests - a.totalTests;
+                    }
+                    return b.correct - a.correct;
+                });
+
+                // Populate history table
+                resultArray.forEach((result, i) => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${++index}</td>
+                        <td>${i + 1}</td>
                         <td>${result.tester}</td>
                         <td>${result.date}</td>
                         <td>${result.startTime}</td>
@@ -124,8 +138,9 @@
                         <td>${result.score}</td>
                     `;
                     historyTbody.appendChild(row);
-                }
+                });
 
+                // Populate summary table
                 for (let key in summary) {
                     const row = document.createElement('tr');
                     row.innerHTML = `
