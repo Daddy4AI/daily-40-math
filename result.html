@@ -24,6 +24,13 @@
         h2 {
             text-align: center;
         }
+        .center {
+            text-align: center;
+        }
+        #restart-btn {
+            padding: 10px;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -43,6 +50,9 @@
             <tbody id="summary-tbody">
             </tbody>
         </table>
+        <div class="center">
+            <button id="restart-btn">Restart</button>
+        </div>
     </div>
     <h2>历史每次测试的统计数字</h2>
     <div id="history-section">
@@ -112,6 +122,10 @@
                 }
             });
         }
+
+        document.getElementById('restart-btn').addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
 
         loadHistory();
     </script>
