@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily 40 Math - Results</title>
+    <style>
+        body {
+            margin: 20px;
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2>历史测试结果统计</h2>
+    <div id="summary-section">
+        <h3>按答对题目数量排名</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>测试人员</th>
+                    <th>累计答对题目数量</th>
+                    <th>累计测试次数</th>
+                    <th>最新测试答对题目数量</th>
+                    <th>最新测试时间</th>
+                </tr>
+            </thead>
+            <tbody id="summary-tbody">
+            </tbody>
+        </table>
+    </div>
+    <h2>历史每次测试的统计数字</h2>
+    <div id="history-section">
+        <table>
+            <thead>
+                <tr>
+                    <th>测试次数</th>
+                    <th>测试人员</th>
+                    <th>测试日期</th>
+                    <th>开始时间</th>
+                    <th>考试时间</th>
+                    <th>答对题目</th>
+                    <th>答错题目</th>
+                    <th>测试分数</th>
+                </tr>
+            </thead>
+            <tbody id="history-tbody">
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function loadHistory() {
+            const summaryTbody = document.getElementById('summary-tbody');
+            const historyTbody = document.getElementById('history-tbody');
+            summaryTbody.innerHTML = '';
+            historyTbody.innerHTML = '';
+
+            database.ref('results').once('value', (snapshot) => {
+                const results = snapshot.val();
+                const summary = { A: { correct: 0, totalTests: 0, latestCorrect: 0, latestTime: '' },
+                                  Z: { correct: 0, totalTests: 0, latestCorrect: 0, latestTime: '' },
+                                  D: { correct: 0, totalTests: 0, latestCorrect: 0, latestTime: '' } };
+                let index = 0;
+
+                for (let key in results) {
+                    const result = results[key];
+                    summary[result.tester].correct += result.correct;
+                    summary[result.tester].totalTests += 1;
+                    summary[result.tester].latestCorrect = result.correct;
+                    summary[result.tester].latestTime = result.startTime;
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${++index}</td>
+                        <td>${result.tester}</td>
+                        <td>${result.date}</td>
+                        <td>${result.startTime}</td>
+                        <td>${result.testTime}</td>
+                        <td>${result.correct}</td>
+                        <td>${result.incorrect}</td>
+                        <td>${result.score}</td>
+                    `;
+                    historyTbody.appendChild(row);
+                }
+
+                for (let key in summary) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${key}</td>
+                        <td>${summary[key].correct}</td>
+                        <td>${summary[key].totalTests}</td>
+                        <td>${summary[key].latestCorrect}</td>
+                        <td>${summary[key].latestTime}</td>
+                    `;
+                    summaryTbody.appendChild(row);
+                }
+            });
+        }
+
+        loadHistory();
+    </script>
+</body>
+</html>
