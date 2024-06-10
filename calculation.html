@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily 40 Math - Calculation</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+        }
+        #header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-bottom: 1px solid #ccc;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        #questions-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        #questions-table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        #animal {
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            top: 0;
+            left: 10px;
+            animation: moveAnimal 60s linear infinite;
+        }
+        @keyframes moveAnimal {
+            0% { top: 0; }
+            100% { top: calc(100% - 40px); }
+        }
+        #timer {
+            font-size: 24px;
+        }
+        .highlight {
+            color: red;
+            animation: blink 1s step-start infinite;
+        }
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+        #check-btn, #view-history-btn {
+            margin: 20px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .result-info {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <div>集中精神10分钟</div>
+        <div id="timer">00:00</div>
+    </div>
+    <div id="calculation-panel">
+        <img id="animal" src="Pics/dog-icon.png" alt="Animal">
+        <table id="questions-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Question</th>
+                    <th>Your Answer</th>
+                    <th>Correct Answer</th>
+                    <th>Correct?</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <button id="check-btn">Check</button>
+        <div class="result-info" id="test-results" style="display: none;">
+            <!-- Result information will be inserted here -->
+        </div>
+        <button id="view-history-btn" style="display: none;">查看历史结果</button>
+    </div>
+
+    <script>
+        const tester = localStorage.getItem('tester');
+        const trainingType = localStorage.getItem('trainingType');
+        let isStarted = false;
+        let timerInterval;
+        let startTime;
+        let currentTime;
+        let correctAnswers = 0;
+        let totalQuestions = 40;
+
+        const animals = [
+            "Pics/dog-icon.png",
+            "Pics/horse-icon.png",
+            "Pics/bee-icon.png",
+            "Pics/donkey-icon.png",
+            "Pics/tiger-icon.png",
+            "Pics/pig-icon.png"
+        ];
+
+        document.getElementById('animal').src = animals[Math.floor(Math.random() * animals.length)];
+
+        function startQuiz() {
+            isStarted = true;
+            startTime = new Date();
+            generateQuestions(tester);
+            startTimer();
+        }
+
+        function startTimer() {
+            const tenMinutes = 10 * 60 * 1000;
+            timerInterval = setInterval(() => {
+                currentTime = new Date();
+                let elapsed = currentTime - startTime;
+                let remaining = tenMinutes - elapsed;
+
+                if (remaining <= 0) {
+                    remaining = 0;
+                    clearInterval(timerInterval);
+                    document.getElementById('timer').classList.add('highlight');
+                }
+
+                let minutes = Math.floor(remaining / (1000 * 60));
+                let seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+                document.getElementById('timer').textContent = `${pad(minutes)}:${pad(seconds)}`;
+
+            }, 1000);
+        }
+
+        function pad(num) {
+            return num < 10 ? '0' + num : num;
+        }
+
+        function generateQuestions(tester) {
+            const tableBody = document.querySelector('#questions-table tbody');
+            tableBody.innerHTML = '';
+            for (let i = 1; i <= totalQuestions; i++) {
+                const row = document.createElement('tr');
+                const question = generateQuestion(i, trainingType, tester);
+                row.innerHTML = `
+                    <td>${i}</td>
+                    <td>${question.question}</td>
+                    <td><input type="number" class="user-answer" /></td>
+                    <td class="correct-answer" data-answer="${question.answer}"></td>
+                    <td class="is-correct"></td>
+                `;
+                tableBody.appendChild(row);
+            }
+        }
+
+        function generateQuestion(index, trainingType, tester) {
+            let num1, num2, question, answer;
+            const ranges = {
+                A: {
+                    addition: { num1: [1, 999], num2: [1, 999], sum: 999 },
+                    subtraction: { num1: [1, 999], num2: [1, 999] },
+                    multiplication: { num1: [1, 99], num2: [2, 11] },
+                    division: { num1: [1, 99], num2: [2, 11] }
+                },
+                Z: {
+                    addition: { num1: [1, 9999], num2: [1, 9999], sum: 9999 },
+                    subtraction: { num1: [1, 9999], num2: [1, 9999] },
+                    multiplication: { num1: [1, 999], num2: [2, 39] },
+                    division: { num1: [1, 199], num2: [2, 39] }
+                },
+                D: {
+                    addition: { num1: [1, 9999], num2: [1, 9999] },
+                    subtraction: { num1: [1, 9999], num2: [1, 9999] },
+                    multiplication: { num1: [1, 999], num2: [2, 99] },
+                    division: { num1: [1, 199], num2: [2, 99] }
+                }
+            };
+
+            const range = ranges[tester];
+            if (trainingType === '乘除训练') {
+                if (index <= 20) { // multiplication
+                    num1 = getRandomInt(range.multiplication.num1[0], range.multiplication.num1[1]);
+                    num2 = getRandomInt(range.multiplication.num2[0], range.multiplication.num2[1]);
+                    question = `${num1} * ${num2} =`;
+                    answer = num1 * num2;
+                } else { // division
+                    num2 = getRandomInt(range.division.num2[0], range.division.num2[1]);
+                    num1 = getRandomInt(range.division.num1[0], range.division.num1[1]) * num2;
+                    question = `${num1} / ${num2} =`;
+                    answer = num1 / num2;
+                }
+            } else {
+                if (index <= 10) { // multiplication
+                    num1 = getRandomInt(range.multiplication.num1[0], range.multiplication.num1[1]);
+                    num2 = getRandomInt(range.multiplication.num2[0], range.multiplication.num2[1]);
+                    question = `${num1} * ${num2} =`;
+                    answer = num1 * num2;
+                } else if (index <= 20) { // division
+                    num2 = getRandomInt(range.division.num2[0], range.division.num2[1]);
+                    num1 = getRandomInt(range.division.num1[0], range.division.num1[1]) * num2;
+                    question = `${num1} / ${num2} =`;
+                    answer = num1 / num2;
+                } else if (index <= 30) { // subtraction
+                    num1 = getRandomInt(range.subtraction.num1[0], range.subtraction.num1[1]);
+                    num2 = getRandomInt(range.subtraction.num2[0], Math.min(num1, range.subtraction.num2[1]));
+                    question = `${num1} - ${num2} =`;
+                    answer = num1 - num2;
+                } else { // addition
+                    num1 = getRandomInt(range.addition.num1[0], range.addition.num1[1]);
+                    num2 = getRandomInt(range.addition.num2[0], Math.min(range.addition.sum - num1, range.addition.num2[1]));
+                    question = `${num1} + ${num2} =`;
+                    answer = num1 + num2;
+                }
+            }
+            return { question, answer };
+        }
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function showResults() {
+            const endTime = new Date();
+            const testTime = new Date(endTime - startTime);
+            document.getElementById('today-date').textContent = new Date().toLocaleDateString();
+            document.getElementById('start-time').textContent = startTime.toLocaleTimeString();
+            document.getElementById('test-time').textContent = `${pad(testTime.getUTCMinutes())}:${pad(testTime.getUTCSeconds())}`;
+            document.getElementById('correct-answers').textContent = correctAnswers;
+            document.getElementById('incorrect-answers').textContent = totalQuestions - correctAnswers;
+            document.getElementById('total-score').textContent = ((correctAnswers / totalQuestions) * 100).toFixed(2);
+            document.getElementById('test-results').style.display = 'block';
+            document.getElementById('view-history-btn').style.display = 'block';
+        }
+
+        function saveResults() {
+            const endTime = new Date();
+            const testTime = new Date(endTime - startTime);
+            const tester = localStorage.getItem('tester');
+            const resultData = {
+                tester,
+                date: new Date().toLocaleDateString(),
+                startTime: startTime.toLocaleTimeString(),
+                testTime: `${pad(testTime.getUTCMinutes())}:${pad(testTime.getUTCSeconds())}`,
+                correct: correctAnswers,
+                incorrect: totalQuestions - correctAnswers,
+                score: ((correctAnswers / totalQuestions) * 100).toFixed(2)
+            };
+
+            // Save result to Firebase
+            database.ref('results').push(resultData);
+        }
+
+        function clearQuestions() {
+            const tableBody = document.querySelector('#questions-table tbody');
+            tableBody.innerHTML = '';
+        }
+
+        function loadHistory() {
+            window.location.href = 'result.html';
+        }
+
+        document.getElementById('check-btn').addEventListener('click', () => {
+            clearInterval(timerInterval);
+            document.getElementById('check-btn').textContent = 'Restart';
+            document.getElementById('check-btn').addEventListener('click', () => {
+                window.location.reload();
+            });
+            const rows = document.querySelectorAll('#questions-table tbody tr');
+            rows.forEach(row => {
+                const userAnswerInput = row.querySelector('.user-answer');
+                const userAnswer = userAnswerInput.value;
+                const correctAnswer = row.querySelector('.correct-answer');
+                const isCorrect = row.querySelector('.is-correct');
+
+                userAnswerInput.disabled = true; // Lock the input area
+
+                if (userAnswer == correctAnswer.dataset.answer) {
+                    isCorrect.textContent = 'Yes';
+                    isCorrect.classList.add('correct');
+                    correctAnswers++;
+                } else {
+                    isCorrect.textContent = 'No';
+                    isCorrect.classList.add('incorrect');
+                }
+                correctAnswer.textContent = correctAnswer.dataset.answer; // Show the correct answer
+            });
+            showResults();
+            saveResults();
+        });
+
+        document.getElementById('view-history-btn').addEventListener('click', loadHistory);
+
+        startQuiz();
+    </script>
+</body>
+</html>
