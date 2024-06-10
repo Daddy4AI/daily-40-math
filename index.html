@@ -21,17 +21,13 @@
             padding: 10px;
             font-size: 16px;
         }
+        .spacer {
+            height: 30px;
+        }
     </style>
 </head>
 <body>
     <div id="control-panel">
-        <div>
-            <label for="training-type">选择训练类型:</label>
-            <select id="training-type">
-                <option value="综合训练">综合训练</option>
-                <option value="乘除训练">乘除训练</option>
-            </select>
-        </div>
         <div>
             <label for="tester">测试人员:</label>
             <select id="tester">
@@ -40,6 +36,15 @@
                 <option value="D">D</option>
             </select>
         </div>
+        <div class="spacer"></div>
+        <div>
+            <label for="training-type">选择训练类型:</label>
+            <select id="training-type">
+                <option value="综合训练">综合训练</option>
+                <option value="乘除训练">乘除训练</option>
+            </select>
+        </div>
+        <div class="spacer"></div>
         <button id="start-btn">Start</button>
     </div>
 
