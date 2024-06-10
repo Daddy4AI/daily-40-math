@@ -57,13 +57,16 @@
                 opacity: 0;
             }
         }
-        #check-btn, #view-history-btn {
+        #check-btn, #ranking-btn {
             margin: 20px 0;
             padding: 10px;
             font-size: 16px;
         }
         .result-info {
             margin-top: 20px;
+        }
+        .center {
+            text-align: center;
         }
     </style>
 </head>
@@ -87,11 +90,15 @@
             <tbody>
             </tbody>
         </table>
-        <button id="check-btn">Check</button>
+        <div class="center">
+            <button id="check-btn">Check</button>
+        </div>
         <div class="result-info" id="test-results" style="display: none;">
             <!-- Result information will be inserted here -->
         </div>
-        <button id="view-history-btn" style="display: none;">查看历史结果</button>
+        <div class="center">
+            <button id="ranking-btn" style="display: none;">Ranking</button>
+        </div>
     </div>
 
     <script>
@@ -239,7 +246,7 @@
             document.getElementById('incorrect-answers').textContent = totalQuestions - correctAnswers;
             document.getElementById('total-score').textContent = ((correctAnswers / totalQuestions) * 100).toFixed(2);
             document.getElementById('test-results').style.display = 'block';
-            document.getElementById('view-history-btn').style.display = 'block';
+            document.getElementById('ranking-btn').style.display = 'block';
         }
 
         function saveResults() {
@@ -265,16 +272,12 @@
             tableBody.innerHTML = '';
         }
 
-        function loadHistory() {
+        function loadRanking() {
             window.location.href = 'result.html';
         }
 
         document.getElementById('check-btn').addEventListener('click', () => {
             clearInterval(timerInterval);
-            document.getElementById('check-btn').textContent = 'Restart';
-            document.getElementById('check-btn').addEventListener('click', () => {
-                window.location.reload();
-            });
             const rows = document.querySelectorAll('#questions-table tbody tr');
             rows.forEach(row => {
                 const userAnswerInput = row.querySelector('.user-answer');
@@ -298,7 +301,7 @@
             saveResults();
         });
 
-        document.getElementById('view-history-btn').addEventListener('click', loadHistory);
+        document.getElementById('ranking-btn').addEventListener('click', loadRanking);
 
         startQuiz();
     </script>
