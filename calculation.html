@@ -107,7 +107,23 @@
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
     <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyDJyyvOv4Soh0CfKGZc6ecNCAYxu2wnFt8",
+            authDomain: "daily-40-math-78f74.firebaseapp.com",
+            databaseURL: "https://daily-40-math-78f74-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "daily-40-math-78f74",
+            storageBucket: "daily-40-math-78f74.appspot.com",
+            messagingSenderId: "962252006488",
+            appId: "1:962252006488:web:50cc22cdbf837568d3562d"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         const tester = localStorage.getItem('tester');
         const trainingType = localStorage.getItem('trainingType');
         let isStarted = false;
