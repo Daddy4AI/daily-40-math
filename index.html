@@ -3,176 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily 40 Math</title>
+    <title>Daily 40 Math - Start</title>
     <style>
         body {
             display: flex;
-            margin: 0;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             height: 100vh;
+            margin: 0;
         }
         #control-panel {
-            width: 16.6666%;
-            border-right: 1px solid #ccc;
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            padding-top: 20px;
-            flex-shrink: 0;
         }
-        #calculation-panel {
-            width: 83.3334%;
-            padding: 20px;
-            overflow-y: auto;
-            text-align: center;
-            position: relative;
-            flex-grow: 1;
-        }
-        #animal {
-            width: 40px;
-            height: 40px;
-            position: absolute;
-            top: 10px;
-            left: 0;
-            animation: moveAnimal 60s linear infinite;
-        }
-        @keyframes moveAnimal {
-            0% { left: 0; }
-            100% { left: calc(100% - 40px); }
-        }
-        #timer {
-            font-size: 24px;
-            margin: 20px 0;
-        }
-        #start-check-btn, #view-history-btn {
-            width: 100px;
-            height: 50px;
-            margin: 20px 0;
-        }
-        .highlight {
-            color: red;
-            animation: blink 1s step-start infinite;
-        }
-        @keyframes blink {
-            50% {
-                opacity: 0;
-            }
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid black;
-        }
-        th, td {
+        select, button {
+            margin: 10px;
             padding: 10px;
-            text-align: center;
-        }
-        .correct {
-            color: green;
-        }
-        .incorrect {
-            color: red;
-        }
-        .result-info {
-            margin-top: 20px;
-        }
-        .history-section {
-            margin-top: 20px;
+            font-size: 16px;
         }
     </style>
 </head>
 <body>
-
-<div id="control-panel">
-    <div>
-        <label for="training-type">选择训练类型:</label>
-        <select id="training-type">
-            <option value="综合训练">综合训练</option>
-            <option value="乘除训练">乘除训练</option>
-        </select>
+    <div id="control-panel">
+        <div>
+            <label for="training-type">选择训练类型:</label>
+            <select id="training-type">
+                <option value="综合训练">综合训练</option>
+                <option value="乘除训练">乘除训练</option>
+            </select>
+        </div>
+        <div>
+            <label for="tester">测试人员:</label>
+            <select id="tester">
+                <option value="A">A</option>
+                <option value="Z">Z</option>
+                <option value="D">D</option>
+            </select>
+        </div>
+        <button id="start-btn">Start</button>
     </div>
-    <div>
-        <label for="tester">测试人员:</label>
-        <select id="tester">
-            <option value="A">A</option>
-            <option value="Z">Z</option>
-            <option value="D">D</option>
-        </select>
-    </div>
-    <button id="start-check-btn">Start</button>
-    <div id="timer">00:00</div>
-    <p>本次测试总时间为10分钟</p>
-    <div class="result-info" id="test-results" style="display: none;">
-        <table>
-            <tr><td>测试人员</td><td><span id="tester-name"></span></td></tr>
-            <tr><td>今天日期</td><td><span id="today-date"></span></td></tr>
-            <tr><td>开始时间</td><td><span id="start-time"></span></td></tr>
-            <tr><td>测试时间</td><td><span id="test-time"></span></td></tr>
-            <tr><td>答对题数</td><td><span id="correct-answers"></span></td></tr>
-            <tr><td>答错题数</td><td><span id="incorrect-answers"></span></td></tr>
-            <tr><td>总分数</td><td><span id="total-score"></span></td></tr>
-        </table>
-    </div>
-    <button id="view-history-btn" style="display: none;">查看历史结果</button>
-</div>
 
-<div id="calculation-panel">
-    <h2>Daily 40 Math</h2>
-    <img id="animal" src="Pics/dog-icon.png" alt="Animal">
-    <table id="questions-table">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Question</th>
-                <th>Your Answer</th>
-                <th>Correct Answer</th>
-                <th>Correct?</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    <div id="history-results" class="history-section" style="display: none;">
-        <h2>历史测试结果统计</h2>
-        <table id="summary-table">
-            <thead>
-                <tr>
-                    <th>测试人员</th>
-                    <th>答对题目总数</th>
-                    <th>总分数</th>
-                </tr>
-            </thead>
-            <tbody id="summary-tbody">
-            </tbody>
-        </table>
-        <h2>历史每次测试的统计数字</h2>
-        <table id="history-table">
-            <thead>
-                <tr>
-                    <th>测试次数</th>
-                    <th>测试人员</th>
-                    <th>测试日期</th>
-                    <th>开始时间</th>
-                    <th>考试时间</th>
-                    <th>答对题目</th>
-                    <th>答错题目</th>
-                    <th>测试分数</th>
-                </tr>
-            </thead>
-            <tbody id="history-tbody">
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
-<script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
-<!-- Add Firebase products that you want to use -->
-<script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
-<script src="script.js"></script>
-
+    <script>
+        document.getElementById('start-btn').addEventListener('click', () => {
+            const tester = document.getElementById('tester').value;
+            const trainingType = document.getElementById('training-type').value;
+            localStorage.setItem('tester', tester);
+            localStorage.setItem('trainingType', trainingType);
+            window.location.href = 'calculation.html';
+        });
+    </script>
 </body>
 </html>
