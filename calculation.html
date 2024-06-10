@@ -36,14 +36,8 @@
         #animal {
             width: 40px;
             height: 40px;
-            position: absolute;
-            top: 0;
+            position: fixed;
             left: 10px;
-            animation: moveAnimal 60s linear infinite;
-        }
-        @keyframes moveAnimal {
-            0% { top: 0; }
-            100% { top: calc(100% - 40px); }
         }
         #timer {
             font-size: 24px;
@@ -298,7 +292,6 @@
         function saveResults() {
             const endTime = new Date();
             const testTime = new Date(endTime - startTime);
-            const tester = localStorage.getItem('tester');
             const resultData = {
                 tester,
                 date: new Date().toLocaleDateString(),
