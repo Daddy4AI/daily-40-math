@@ -21,6 +21,19 @@
             padding: 10px;
             font-size: 16px;
         }
+        button {
+            cursor: pointer; /* Ensure the pointer cursor is shown */
+            background-color: #4CAF50; /* Add a background color */
+            color: white; /* Set text color to white */
+            border: none; /* Remove default border */
+            border-radius: 4px; /* Add rounded corners */
+        }
+        button:hover {
+            background-color: #45a049; /* Add hover effect */
+        }
+        button:active {
+            background-color: #3e8e41; /* Add active effect */
+        }
         .spacer {
             height: 30px;
         }
@@ -50,7 +63,18 @@
     </div>
 
     <script>
-        document.getElementById('start-btn').addEventListener('click', () => {
+        document.getElementById('start-btn').addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent default form submission
+            const tester = document.getElementById('tester').value;
+            const trainingType = document.getElementById('training-type').value;
+            localStorage.setItem('tester', tester);
+            localStorage.setItem('trainingType', trainingType);
+            window.location.href = 'calculation.html';
+        });
+
+        // Adding touch event support for iOS devices
+        document.getElementById('start-btn').addEventListener('touchstart', (event) => {
+            event.preventDefault(); // Prevent default form submission
             const tester = document.getElementById('tester').value;
             const trainingType = document.getElementById('training-type').value;
             localStorage.setItem('tester', tester);
