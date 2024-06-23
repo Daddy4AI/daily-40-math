@@ -332,17 +332,15 @@
                     isCorrect.textContent = 'Yes';
                     isCorrect.classList.add('correct');
                     correctAnswers++;
-                    userAnswerInput.disabled = true; // Lock the input area
-                    correctAnswer.textContent = correctAnswer.dataset.answer; // Show correct answer
                 } else {
                     isCorrect.textContent = 'No';
                     isCorrect.classList.add('incorrect');
                     row.classList.add('incorrect-row');
                     userAnswerInput.value = '';
-                    userAnswerInput.disabled = false; // Keep input area editable
-                    correctAnswer.textContent = ''; // Hide correct answer
                     hasIncorrect = true;
                 }
+                correctAnswer.textContent = ''; // Hide correct answer
+                userAnswerInput.disabled = false; // Make input area editable
             });
 
             if (hasIncorrect) {
@@ -360,15 +358,11 @@
                             isCorrect.classList.add('correct');
                             correctAnswers++;
                             row.classList.remove('incorrect-row');
-                            userAnswerInput.disabled = true; // Lock the input area
-                            correctAnswer.textContent = correctAnswer.dataset.answer; // Show correct answer
                         } else {
                             isCorrect.textContent = 'No';
                             isCorrect.classList.add('incorrect');
                             row.classList.add('incorrect-row');
                             userAnswerInput.value = '';
-                            userAnswerInput.disabled = false; // Keep input area editable
-                            correctAnswer.textContent = ''; // Hide correct answer
                         }
                     });
                 });
