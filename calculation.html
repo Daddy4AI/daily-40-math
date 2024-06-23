@@ -62,9 +62,6 @@
         .center {
             text-align: center;
         }
-        .incorrect-row td {
-            color: red;
-        }
     </style>
 </head>
 <body>
@@ -319,14 +316,15 @@
         }
 
         document.getElementById('check-btn').addEventListener('click', () => {
+            clearInterval(timerInterval);
             const rows = document.querySelectorAll('#questions-table tbody tr');
-            let hasIncorrect = false;
-
             rows.forEach(row => {
                 const userAnswerInput = row.querySelector('.user-answer');
                 const userAnswer = userAnswerInput.value;
                 const correctAnswer = row.querySelector('.correct-answer');
                 const isCorrect = row.querySelector('.is-correct');
+
+                userAnswerInput.disabled = true; // Lock the input area
 
                 if (userAnswer == correctAnswer.dataset.answer) {
                     isCorrect.textContent = 'Yes';
@@ -335,43 +333,18 @@
                 } else {
                     isCorrect.textContent = 'No';
                     isCorrect.classList.add('incorrect');
-                    row.classList.add('incorrect-row');
-                    userAnswerInput.value = '';
-                    hasIncorrect = true;
                 }
-                correctAnswer.textContent = ''; // Hide correct answer
-                userAnswerInput.disabled = false; // Make input area editable
+                correctAnswer.textContent = correctAnswer.dataset.answer; // Show the correct answer
+
+                // Change animal
+                currentAnimalIndex = (currentAnimalIndex + 1) % animals.length;
+                animalElement.src = animals[currentAnimalIndex];
+                animalElement.style.top = row.getBoundingClientRect().top + 'px';
             });
-
-            if (hasIncorrect) {
-                document.getElementById('check-btn').textContent = '订正错题';
-                document.getElementById('check-btn').addEventListener('click', () => {
-                    correctAnswers = 0;
-                    rows.forEach(row => {
-                        const userAnswerInput = row.querySelector('.user-answer');
-                        const userAnswer = userAnswerInput.value;
-                        const correctAnswer = row.querySelector('.correct-answer');
-                        const isCorrect = row.querySelector('.is-correct');
-
-                        if (userAnswer == correctAnswer.dataset.answer) {
-                            isCorrect.textContent = 'Yes';
-                            isCorrect.classList.add('correct');
-                            correctAnswers++;
-                            row.classList.remove('incorrect-row');
-                        } else {
-                            isCorrect.textContent = 'No';
-                            isCorrect.classList.add('incorrect');
-                            row.classList.add('incorrect-row');
-                            userAnswerInput.value = '';
-                        }
-                    });
-                });
-            } else {
-                showResults();
-                saveResults();
-                document.getElementById('check-btn').style.backgroundColor = 'gray';
-                document.getElementById('ranking-btn').style.display = 'block';
-            }
+            showResults();
+            saveResults();
+            document.getElementById('check-btn').style.backgroundColor = 'gray';
+            document.getElementById('ranking-btn').style.display = 'block';
         });
 
         document.getElementById('ranking-btn').addEventListener('click', loadRanking);
