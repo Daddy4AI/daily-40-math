@@ -132,8 +132,12 @@
                 sortedSummary.forEach(([key, value], index) => {
                     const participantResults = resultArray.filter(result => result.tester === key);
                     
-                    // Sort participant results by test time in reverse order
-                    participantResults.sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
+                    // Sort participant results by test date and time in reverse order
+                    participantResults.sort((a, b) => {
+                        const dateA = new Date(a.date + ' ' + a.startTime);
+                        const dateB = new Date(b.date + ' ' + b.startTime);
+                        return dateB - dateA;
+                    });
 
                     const table = document.createElement('table');
                     table.classList.add('history-table');
