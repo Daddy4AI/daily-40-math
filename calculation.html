@@ -37,7 +37,9 @@
             width: 40px;
             height: 40px;
             position: fixed;
+            top: 10px;
             left: 10px;
+            transition: transform 2s linear;
         }
         #timer {
             font-size: 24px;
@@ -50,6 +52,11 @@
             50% {
                 opacity: 0;
             }
+        }
+        @keyframes moveLeftRight {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(calc(100vw - 50px)); }
+            100% { transform: translateX(0); }
         }
         #check-btn, #ranking-btn {
             margin: 20px 0;
@@ -146,6 +153,7 @@
             startTime = new Date();
             generateQuestions(tester);
             startTimer();
+            moveAnimal();
         }
 
         function startTimer() {
@@ -181,7 +189,7 @@
                 row.innerHTML = `
                     <td>${i}</td>
                     <td>${question.question}</td>
-                    <td><input type="number" class="user-answer" /></td>
+                    <td><input type="number" class="user-answer" onfocus="changeAnimal(${i})" /></td>
                     <td class="correct-answer" data-answer="${question.answer}"></td>
                     <td class="is-correct"></td>
                 `;
@@ -313,6 +321,15 @@
 
         function loadRanking() {
             window.location.href = 'result.html';
+        }
+
+        function changeAnimal(index) {
+            currentAnimalIndex = index % animals.length;
+            animalElement.src = animals[currentAnimalIndex];
+        }
+
+        function moveAnimal() {
+            animalElement.style.animation = 'moveLeftRight 10s linear infinite';
         }
 
         document.getElementById('check-btn').addEventListener('click', () => {
