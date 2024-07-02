@@ -49,6 +49,7 @@
         <button id="start-btn">Start</button>
     </div>
 
+       
     <script>
         document.getElementById('start-btn').addEventListener('click', () => {
             const tester = document.getElementById('tester').value;
@@ -56,6 +57,14 @@
             localStorage.setItem('tester', tester);
             localStorage.setItem('trainingType', trainingType);
             window.location.href = 'calculation.html';
+        });
+    </script>
+
+     <button id="Test Summary">Load Another Page</button>
+
+    <script>
+        document.getElementById("Test Summary").addEventListener("click", function() {
+            window.location.href = "https://daddy4ai.github.io/daily-40-math/result.html"; // 将此URL替换为你想加载的网页URL
         });
     </script>
 </body>
