@@ -37,9 +37,10 @@
             width: 40px;
             height: 40px;
             position: fixed;
-            top: 10px;
+            top: 10px; /* Adjusted to stay at the top */
             left: 10px;
             transition: transform 2s linear;
+            z-index: 1100; /* Ensuring it's above the header */
         }
         #timer {
             font-size: 24px;
@@ -118,7 +119,7 @@
             authDomain: "daily-40-math-78f74.firebaseapp.com",
             databaseURL: "https://daily-40-math-78f74-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "daily-40-math-78f74",
-            storageBucket: "daily-40-math-78f74.appspot.com",
+            storageBucket: "daily-40-math-78f74",
             messagingSenderId: "962252006488",
             appId: "1:962252006488:web:50cc22cdbf837568d3562d"
         };
