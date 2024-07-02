@@ -31,6 +31,15 @@
             padding: 10px;
             font-size: 16px;
         }
+        .history-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .history-table {
+            width: 48%;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -55,23 +64,7 @@
         </div>
     </div>
     <h2>历史每次测试的统计数字</h2>
-    <div id="history-section">
-        <table>
-            <thead>
-                <tr>
-                    <th>测试次数</th>
-                    <th>测试人员</th>
-                    <th>测试日期</th>
-                    <th>开始时间</th>
-                    <th>考试时间</th>
-                    <th>答对题目</th>
-                    <th>答错题目</th>
-                    <th>测试分数</th>
-                </tr>
-            </thead>
-            <tbody id="history-tbody">
-            </tbody>
-        </table>
+    <div id="history-section" class="history-container">
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
@@ -93,9 +86,9 @@
 
         function loadHistory() {
             const summaryTbody = document.getElementById('summary-tbody');
-            const historyTbody = document.getElementById('history-tbody');
+            const historySection = document.getElementById('history-section');
             summaryTbody.innerHTML = '';
-            historyTbody.innerHTML = '';
+            historySection.innerHTML = '';
 
             database.ref('results').once('value', (snapshot) => {
                 const results = snapshot.val();
@@ -116,42 +109,57 @@
                     resultArray.push(result);
                 }
 
-                // Sort resultArray first by correct answers, then by total tests
-                resultArray.sort((a, b) => {
-                    if (b.correct === a.correct) {
-                        return b.totalTests - a.totalTests;
-                    }
-                    return b.correct - a.correct;
-                });
-
-                // Populate history table
-                resultArray.forEach((result, i) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${i + 1}</td>
-                        <td>${result.tester}</td>
-                        <td>${result.date}</td>
-                        <td>${result.startTime}</td>
-                        <td>${result.testTime}</td>
-                        <td>${result.correct}</td>
-                        <td>${result.incorrect}</td>
-                        <td>${result.score}</td>
-                    `;
-                    historyTbody.appendChild(row);
-                });
+                // Sort summary by total correct answers
+                const sortedSummary = Object.entries(summary).sort((a, b) => b[1].correct - a[1].correct);
 
                 // Populate summary table
-                for (let key in summary) {
+                sortedSummary.forEach(([key, value]) => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${key}</td>
-                        <td>${summary[key].correct}</td>
-                        <td>${summary[key].totalTests}</td>
-                        <td>${summary[key].latestCorrect}</td>
-                        <td>${summary[key].latestTime}</td>
+                        <td>${value.correct}</td>
+                        <td>${value.totalTests}</td>
+                        <td>${value.latestCorrect}</td>
+                        <td>${value.latestTime}</td>
                     `;
                     summaryTbody.appendChild(row);
-                }
+                });
+
+                // Create history tables for each participant
+                sortedSummary.forEach(([key, value], index) => {
+                    const participantResults = resultArray.filter(result => result.tester === key);
+                    const table = document.createElement('table');
+                    table.classList.add('history-table');
+                    table.innerHTML = `
+                        <thead>
+                            <tr>
+                                <th>测试次数</th>
+                                <th>测试人员</th>
+                                <th>测试日期</th>
+                                <th>开始时间</th>
+                                <th>考试时间</th>
+                                <th>答对题目</th>
+                                <th>答错题目</th>
+                                <th>测试分数</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        ${participantResults.map((result, i) => `
+                            <tr>
+                                <td>${i + 1}</td>
+                                <td>${result.tester}</td>
+                                <td>${result.date}</td>
+                                <td>${result.startTime}</td>
+                                <td>${result.testTime}</td>
+                                <td>${result.correct}</td>
+                                <td>${result.incorrect}</td>
+                                <td>${result.score}</td>
+                            </tr>
+                        `).join('')}
+                        </tbody>
+                    `;
+                    historySection.appendChild(table);
+                });
             });
         }
 
