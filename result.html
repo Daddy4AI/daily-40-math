@@ -156,7 +156,7 @@
                         </thead>
                         <tbody>
                         ${participantResults.map((result, i) => `
-                            <tr class="${result.score < 80 ? 'highlight' : ''}">
+                            <tr class="${result.score < 90 ? 'highlight' : ''}">
                                 <td>${i + 1}</td>
                                 <td>${result.tester}</td>
                                 <td>${result.date}</td>
