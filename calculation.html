@@ -134,7 +134,7 @@
         let startTime;
         let currentTime;
         let correctAnswers = 0;
-        let totalQuestions = 40;
+        let totalQuestions = 20;
 
         const animals = [
             "Pics/donkey-icon.png",
@@ -229,7 +229,7 @@
 
             const range = ranges[tester];
             if (trainingType === '乘除训练') {
-                if (index <= 20) { // multiplication
+                if (index <= totalQuestions * 0.5) { // multiplication
                     num1 = getRandomInt(range.multiplication.num1[0], range.multiplication.num1[1]);
                     num2 = getRandomInt(range.multiplication.num2[0], range.multiplication.num2[1]);
                     question = `${num1} * ${num2} =`;
@@ -248,12 +248,12 @@
                     }
                 }
             } else {
-                if (index <= 10) { // multiplication
+                if (index <= totalQuestions * 0.25) { // multiplication
                     num1 = getRandomInt(range.multiplication.num1[0], range.multiplication.num1[1]);
                     num2 = getRandomInt(range.multiplication.num2[0], range.multiplication.num2[1]);
                     question = `${num1} * ${num2} =`;
                     answer = num1 * num2;
-                } else if (index <= 20) { // division
+                } else if (index <= totalQuestions * 0.5) { // division
                     if (tester === 'W') { // Replace division with addition for tester 'W'
                         num1 = getRandomInt(range.addition.num1[0], range.addition.num1[1]);
                         num2 = getRandomInt(range.addition.num2[0], Math.min(range.addition.sum - num1, range.addition.num2[1]));
@@ -265,7 +265,7 @@
                         question = `${num1} / ${num2} =`;
                         answer = num1 / num2;
                     }
-                } else if (index <= 30) { // subtraction
+                } else if (index <= totalQuestions * 0.75) { // subtraction
                     num1 = getRandomInt(range.subtraction.num1[0], range.subtraction.num1[1]);
                     num2 = getRandomInt(range.subtraction.num2[0], Math.min(num1, range.subtraction.num2[1]));
                     question = `${num1} - ${num2} =`;
